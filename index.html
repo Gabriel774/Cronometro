@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="plugins/css/uikit.min.css">
+    <link rel="stylesheet" href="plugins/css/uikit-rtl.min.css">
+    <script src="plugins/js/uikit.min.js"></script>
+    <script src="plugins/js/uikit-icons.min.js"></script>
+    <script src="vue.js"></script>
+    <title>Cronometro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1 :class="{'no-select': btn}">
+            {{ hh>=10?hh:'0'+hh }}:{{ mm>=10?mm:'0'+mm }}:{{ ss>=10?ss:'0'+ss }},{{ ml>=10?ml:'0'+ml }}
+        </h1>
+        <button @click="cp" class="uk-button tam" style="margin-right: 0px;"
+            :class="{'uk-button-primary': !btn, 'uk-button-danger': btn }">
+            <template v-if="!btn">Iniciar</template>
+            <template v-if="btn">Parar</template>
+        </button>
+        <button @click="volta" class="uk-button uk-button-default tam" style="margin-left: 15px;">Volta</button> <br>
+        <a @click="reset" class="uk-icon" style="margin-top: 20px;" uk-icon="refresh"></a>
+        <div class="uk-align-center" style="width: 300px; height:350px; overflow: auto; text-align: center;">
+            <ul>
+                <li v-for="valor in laps.slice().reverse()" style="list-style: none;">{{ valor }}</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                btn: false,
+                hh: 0,
+                mm: 0,
+                ss: 0,
+                ml: 0,
+                laps: [],
+                c: 1
+            },
+            methods: {
+                cp() {
+                    this.btn = !this.btn
+                    if (this.btn) {
+                        cron = setInterval(() => {
+                            this.ml += 1
+                            if (this.ml > 99) {
+                                this.ml = 0
+                                this.ss++
+                                if (this.ss > 59) {
+                                    this.ss = 0
+                                    this.mm++
+                                    if (this.mm > 59) {
+                                        this.mm = 0
+                                        this.hh++
+                                    }
+                                }
+                            }
+
+                        }, 10)
+                    } else {
+                        clearInterval(cron)
+                    }
+                },
+                reset() {
+                    clearInterval(cron)
+                    this.ml = 0
+                    this.btn = false
+                    this.ss = 0
+                    this.mm = 0
+                    this.hh = 0
+                    this.laps = []
+                    this.c = 1
+                },
+                volta() {
+                    if (this.ml != 0 || this.ss != 0 || this.mm != 0 || this.hh != 0) {
+                        this.laps.push(
+                            `${this.c>=10?this.c:'0'+this.c}) ${this.hh>=10?this.hh:'0'+this.hh}:${this.mm>=10?this.mm:'0'+this.mm}:${this.ss>=10?this.ss:'0'+this.ss},${this.ml>=10?this.ml:'0'+this.ml}`
+                        )
+                        this.c++
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
