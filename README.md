@@ -1,2 +1,1 @@
-# Cronometro
-Um cronômetro feito a partir de VueJS para fins de estudo.
+# Versão atualizada desse projeto: https://cronometro-timer.vercel.app
